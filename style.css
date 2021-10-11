@@ -7,8 +7,9 @@
     margin-top: 5em;
 }
 
-.display{
+#display{
     grid-column: 1/5;
+    text-align: right;
 }
 
 .zero{
