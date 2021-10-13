@@ -5,8 +5,9 @@ const operators = document.querySelectorAll(".operators");
 const equal = document.getElementById("equal");
 let displayNumbers = [];
 let operatorValue;
-let displayCheck = true;
-let operatorCheck = false;
+let displayCheck = true; // variable to check if the display has a value;
+let operatorCheck = true; // variable to check if the operator has been clicked;
+let equalCheck = true; // variable to check if the equal button has been clicked;
 
 equal.addEventListener("click", Operate);
 
@@ -18,16 +19,23 @@ operators.forEach(operator =>{
 
 function Operators(){
     operatorValue = this.textContent;
+
     if (display.textContent !== ""){
         if (displayNumbers.length < 2) {
             displayNumbers.push(display.textContent);
         }
-        if (displayNumbers.length == 2) {
+        if (equalCheck === false) {
+            displayNumbers.pop();
+            console.log(displayNumbers);
+        }
+        if (displayNumbers.length == 2 && operatorCheck === true) {
+            displayNumbers.pop();
             Operate();
         }
         displayCheck = false;
+        operatorCheck = true;
+        equalCheck = true;
     }
-    console.log(displayNumbers)
 }
 
 numbers.forEach(number =>{
@@ -55,45 +63,50 @@ function Clear(){
 }
 
 function ContinueEqual(){
+    displayNumbers[0] = display.textContent;
+    operatorCheck = false;
+    equalCheck = false;
     equal.addEventListener("click", ()=>{
-        displayNumbers[0] = display.textContent;
         displayCheck = false;
     });
- 
-}
-
-function ContinueOperator(){
- 
 }
 
 function Add(a, b){
     display.textContent = parseInt(a) + parseInt(b);
     ContinueEqual();
+    console.log(operatorCheck);
+    console.log(equalCheck);
 }
 
 function Subtract(a, b){
     display.textContent = parseInt(a) - parseInt(b);
+    displayNumbers[0] = display.textContent;
     ContinueEqual();
 }
 
 function Multiply(a, b){
     display.textContent = parseInt(a) * parseInt(b);
+    displayNumbers[0] = display.textContent;
     ContinueEqual();
 }
 
 function Divide(a, b){
     display.textContent = parseInt(a) / parseInt(b);
+    displayNumbers[0] = display.textContent;
     ContinueEqual();
 }
 
 function Operate(first, operator, second){   
     if (displayNumbers.length < 2) {
         displayNumbers.push(display.textContent);
+    }else if (operatorCheck === true && displayNumbers.length === 2) {
+        displayNumbers.pop();
+        displayNumbers.push(display.textContent);
     }
     operator = operatorValue;
     first = displayNumbers[0];
     second = displayNumbers[1];
-    console.log(first,second);
+    console.log(first, second);
     switch (operator) {
         case "+":
            return Add(first, second);
@@ -113,4 +126,9 @@ function Operate(first, operator, second){
     }
 }
 
-//console.log(Operate(2, "/", 5));
+/*BUGS
+
+1. Darle a un operador repetidas veces y que siga realizando operaciones con los valores almecenados.
+
+*/
+ 
