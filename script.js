@@ -7,7 +7,7 @@ let displayNumbers = [];
 let operatorValue;
 let displayCheck = true; // variable to check if the display has a value;
 let operatorCheck = true; // variable to check if the operator has been clicked;
-let equalCheck = true; // variable to check if the equal button has been clicked;
+let test = false; // variable to prevent doing operations when clicking operators multiple times
 
 equal.addEventListener("click", Operate);
 
@@ -18,24 +18,30 @@ operators.forEach(operator =>{
 });
 
 function Operators(){
-    operatorValue = this.textContent;
-
-    if (display.textContent !== ""){
+    //
+    if (test === true) {
+        operatorValue = this.textContent;
+        return;
+    }
+    if (operatorValue !== this.textContent && displayNumbers.length === 2) {
+        Operate();
+        operatorValue = this.textContent;
+    }
+    else{
+        operatorValue = this.textContent;
+    }
+    //check if display is empty
+    if (display.textContent !== ""){   
         if (displayNumbers.length < 2) {
             displayNumbers.push(display.textContent);
         }
-        if (equalCheck === false) {
-            displayNumbers.pop();
-            console.log(displayNumbers);
+        if (displayNumbers.length === 2 && operatorCheck === true) {
+            Operate();  
         }
-        if (displayNumbers.length == 2 && operatorCheck === true) {
-            displayNumbers.pop();
-            Operate();
-        }
-        displayCheck = false;
-        operatorCheck = true;
-        equalCheck = true;
     }
+    displayCheck = false;
+    operatorCheck = true;
+    test = true;
 }
 
 numbers.forEach(number =>{
@@ -43,13 +49,17 @@ numbers.forEach(number =>{
 });
 
 function DisplayText(){
+    test = false;
     if (displayCheck === false) {
         display.textContent = "";
         displayCheck = true;
     }
     if(display.textContent.length < 10 && displayCheck === true) {
-        
        display.textContent+= this.textContent;
+
+    }
+    if(displayNumbers.length > 0 && displayNumbers.length < 2) {
+        displayNumbers.push(this.textContent);
     }
 }
 
@@ -58,46 +68,43 @@ function Clear(){
     for (let i = 0; i < displayNumbers.length; i++) {
         displayNumbers.splice(0, 2);
     }
-    console.log(displayNumbers);
     operatorValue = undefined;
 }
 
-function ContinueEqual(){
-    displayNumbers[0] = display.textContent;
+function Continue(){
     operatorCheck = false;
-    equalCheck = false;
+    displayNumbers.pop();
+    displayNumbers[0] = display.textContent;
     equal.addEventListener("click", ()=>{
-        displayCheck = false;
+    displayCheck = false;
     });
 }
 
 function Add(a, b){
     display.textContent = parseInt(a) + parseInt(b);
-    ContinueEqual();
-    console.log(operatorCheck);
-    console.log(equalCheck);
+    Continue();
 }
 
 function Subtract(a, b){
     display.textContent = parseInt(a) - parseInt(b);
-    displayNumbers[0] = display.textContent;
-    ContinueEqual();
+    Continue();
 }
 
 function Multiply(a, b){
     display.textContent = parseInt(a) * parseInt(b);
-    displayNumbers[0] = display.textContent;
-    ContinueEqual();
+    Continue();
 }
 
 function Divide(a, b){
     display.textContent = parseInt(a) / parseInt(b);
-    displayNumbers[0] = display.textContent;
-    ContinueEqual();
+    Continue();
 }
 
 function Operate(first, operator, second){   
-    if (displayNumbers.length < 2) {
+    if (displayNumbers.length === 0) {
+        return display.textContent = "0";
+    }
+    else if (displayNumbers.length < 2) {
         displayNumbers.push(display.textContent);
     }else if (operatorCheck === true && displayNumbers.length === 2) {
         displayNumbers.pop();
@@ -109,26 +116,25 @@ function Operate(first, operator, second){
     console.log(first, second);
     switch (operator) {
         case "+":
-           return Add(first, second);
+            return Add(first, second);
 
         case "-":
-           return Subtract(first, second);
+            return Subtract(first, second);
 
         case "*":
-           return Multiply(first, second);
+            return Multiply(first, second);
 
         case "/":
-           return Divide(first, second);
+            return Divide(first, second);
 
         default:
-           return "error";
+            return "error";
         
     }
 }
-
 /*BUGS
 
-1. Darle a un operador repetidas veces y que siga realizando operaciones con los valores almecenados.
-
+1. un bug en el que ambos elementos del array son iguales, dificil de replicar 2 + 3 + =
+2. bug de igual no se comporta como el del iphone;
 */
  
