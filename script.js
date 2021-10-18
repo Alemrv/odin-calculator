@@ -3,11 +3,13 @@ const display = document.getElementById("display");
 const clear = document.getElementById("clear");
 const operators = document.querySelectorAll(".operators");
 const equal = document.getElementById("equal");
+
 let displayNumbers = [];
 let operatorValue;
 let displayCheck = true; // variable to check if the display has a value;
 let operatorCheck = true; // variable to check if the operator has been clicked;
 let test = false; // variable to prevent doing operations when clicking operators multiple times
+let equalButton = false; // checks if equalbutton has been presed
 
 equal.addEventListener("click", Operate);
 
@@ -37,11 +39,14 @@ function Operators(){
         }
         if (displayNumbers.length === 2 && operatorCheck === true) {
             Operate();  
+        }else if(displayNumbers.length === 2 && operatorCheck === true && equalButton === true){
+            displayNumbers.pop();
         }
     }
     displayCheck = false;
     operatorCheck = true;
     test = true;
+    equalButton = false;
 }
 
 numbers.forEach(number =>{
@@ -50,7 +55,8 @@ numbers.forEach(number =>{
 
 function DisplayText(){
     test = false;
-    if (displayCheck === false) {
+    equalButton = false;
+    if (displayCheck === false || display.textContent === "0") {
         display.textContent = "";
         displayCheck = true;
     }
@@ -63,8 +69,25 @@ function DisplayText(){
     }
 }
 
+document.addEventListener('keydown', Keyboard);
+
+function Keyboard(event){
+    test = false;
+    equalButton = false;
+    if (displayCheck === false || display.textContent === "0") {
+        display.textContent = "";
+        displayCheck = true;
+    }
+    if (Number(event.key) <= 9 && display.textContent.length < 10 && displayCheck === true) {
+        display.textContent += Number(event.key);
+    }
+    if(displayNumbers.length > 0 && displayNumbers.length < 2) {
+        displayNumbers.push(Number(event.key));
+    }
+}
+
 function Clear(){
-    display.textContent = "";
+    display.textContent = "0";
     for (let i = 0; i < displayNumbers.length; i++) {
         displayNumbers.splice(0, 2);
     }
@@ -73,10 +96,11 @@ function Clear(){
 
 function Continue(){
     operatorCheck = false;
+    displayCheck = false;
+    equalButton = true;
     displayNumbers.pop();
     displayNumbers[0] = display.textContent;
     equal.addEventListener("click", ()=>{
-    displayCheck = false;
     });
 }
 
@@ -110,6 +134,9 @@ function Operate(first, operator, second){
         displayNumbers.pop();
         displayNumbers.push(display.textContent);
     }
+    if (equalButton === true) {
+        return;
+    }
     operator = operatorValue;
     first = displayNumbers[0];
     second = displayNumbers[1];
@@ -134,7 +161,5 @@ function Operate(first, operator, second){
 }
 /*BUGS
 
-1. un bug en el que ambos elementos del array son iguales, dificil de replicar 2 + 3 + =
-2. bug de igual no se comporta como el del iphone;
 */
  
