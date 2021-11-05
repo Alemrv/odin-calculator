@@ -3,6 +3,8 @@ const display = document.getElementById("display");
 const clear = document.getElementById("clear");
 const operators = document.querySelectorAll(".operators");
 const equal = document.getElementById("equal");
+const dot = document.getElementById("dot");
+const negative = document.getElementById("negative");
 
 let displayNumbers = [];
 let operatorValue;
@@ -10,6 +12,8 @@ let displayCheck = true; // variable to check if the display has a value;
 let operatorCheck = true; // variable to check if the operator has been clicked;
 let test = false; // variable to prevent doing operations when clicking operators multiple times
 let equalButton = false; // checks if equalbutton has been presed
+let dotButton = false; // checks if dotbutton has been presed
+let negativeButton = false; // checks if negatibutton has been presed
 
 equal.addEventListener("click", Operate);
 
@@ -47,6 +51,8 @@ function Operators(){
     operatorCheck = true;
     test = true;
     equalButton = false;
+    dotButton = false;
+    negativeButton = false;
 }
 
 numbers.forEach(number =>{
@@ -68,7 +74,7 @@ function DisplayText(){
         displayNumbers.push(this.textContent);
     }
 }
-
+// keyboard support for numbers
 document.addEventListener('keydown', Keyboard);
 
 function Keyboard(event){
@@ -86,55 +92,112 @@ function Keyboard(event){
     }
 }
 
+//delete button
+
 function Clear(){
     display.textContent = "0";
     for (let i = 0; i < displayNumbers.length; i++) {
         displayNumbers.splice(0, 2);
     }
     operatorValue = undefined;
+    dotButton = false;
+    negativeButton = false;
 }
 
+//dot button
+dot.addEventListener("click", Dot);
+
+function Dot(){
+    if (dotButton === false) {
+        display.textContent += this.textContent;
+        dotButton = true;
+    }
+    if (displayCheck === false || display.textContent === "0") {
+        display.textContent = "0.";
+        displayCheck = true;
+    }
+}
+
+//negative button
+negative.addEventListener("click", Negative);
+
+function Negative(){
+    if (display.textContent == "0" || display.textContent == "0."){
+        return;
+    } 
+    if (negativeButton === false && display.textContent[0] !== "-") {
+        display.textContent = "-".concat(display.textContent);
+        if (displayNumbers.length == 1) {
+            displayNumbers.splice(0, 1, display.textContent);
+        }
+        negativeButton = true;
+    }
+    else if(display.textContent != "0"){
+        display.textContent = display.textContent.replace("-","");
+        if (displayNumbers.length == 1) {
+            displayNumbers.splice(0, 1, display.textContent);
+        }
+        negativeButton = false;
+    }
+}
+
+//continue doing more operations
 function Continue(){
     operatorCheck = false;
     displayCheck = false;
     equalButton = true;
     displayNumbers.pop();
     displayNumbers[0] = display.textContent;
-    equal.addEventListener("click", ()=>{
-    });
+}
+
+function CheckReminder(a){
+    if (a % 1 === 0) {
+        display.textContent = a;
+    }
+    else{
+        display.textContent = a.toFixed(2);
+    }
 }
 
 function Add(a, b){
-    display.textContent = parseInt(a) + parseInt(b);
+    let result = parseFloat(a) + parseFloat(b);
+    CheckReminder(result);
     Continue();
 }
 
 function Subtract(a, b){
-    display.textContent = parseInt(a) - parseInt(b);
+    let result = parseFloat(a) - parseFloat(b);
+    CheckReminder(result);
     Continue();
 }
 
 function Multiply(a, b){
-    display.textContent = parseInt(a) * parseInt(b);
+    let result = parseFloat(a) * parseFloat(b);
+    CheckReminder(result);
     Continue();
 }
 
 function Divide(a, b){
-    display.textContent = parseInt(a) / parseInt(b);
+    let result = parseFloat(a) / parseFloat(b);
+    CheckReminder(result);
     Continue();
 }
 
 function Operate(first, operator, second){   
     if (displayNumbers.length === 0) {
-        return display.textContent = "0";
+        return;
     }
+    
     else if (displayNumbers.length < 2) {
         displayNumbers.push(display.textContent);
+
     }else if (operatorCheck === true && displayNumbers.length === 2) {
         displayNumbers.pop();
         displayNumbers.push(display.textContent);
+        console.log("yo");
     }
     if (equalButton === true) {
+        console.log("yo1");
         return;
     }
     operator = operatorValue;
@@ -160,6 +223,8 @@ function Operate(first, operator, second){
     }
 }
 /*BUGS
-
+    1. numero en negativo seguido por igual da --- LISTO
+    2. resultado negativo, no lo puedo quitar, solo se agrega otro simbolo negativo --- LISTO
+    3. algun operador mas igual rompe calculadora -- MAS o Menos
 */
- 
+//AGREGAR KEYBOARD SUPPORT PARA TODO
