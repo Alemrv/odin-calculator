@@ -5,6 +5,7 @@ const operators = document.querySelectorAll(".operators");
 const equal = document.getElementById("equal");
 const dot = document.getElementById("dot");
 const negative = document.getElementById("negative");
+const percent = document.getElementById("percent");
 
 let displayNumbers = [];
 let operatorValue;
@@ -14,6 +15,7 @@ let test = false; // variable to prevent doing operations when clicking operator
 let equalButton = false; // checks if equalbutton has been presed
 let dotButton = false; // checks if dotbutton has been presed
 let negativeButton = false; // checks if negatibutton has been presed
+let funnyMessage = false;
 
 equal.addEventListener("click", Operate);
 
@@ -24,7 +26,9 @@ operators.forEach(operator =>{
 });
 
 function Operators(){
-    //
+    if (funnyMessage === true) {
+        Clear();
+    }
     if (test === true) {
         operatorValue = this.textContent;
         return;
@@ -60,6 +64,9 @@ numbers.forEach(number =>{
 });
 
 function DisplayText(){
+    if (funnyMessage === true) {
+        Clear();
+    }
     test = false;
     equalButton = false;
     if (displayCheck === false || display.textContent === "0") {
@@ -78,6 +85,9 @@ function DisplayText(){
 document.addEventListener('keydown', Keyboard);
 
 function Keyboard(event){
+    if (funnyMessage === true) {
+        Clear();
+    }
     test = false;
     equalButton = false;
     if (displayCheck === false || display.textContent === "0") {
@@ -102,12 +112,16 @@ function Clear(){
     operatorValue = undefined;
     dotButton = false;
     negativeButton = false;
+    funnyMessage = false;
 }
 
 //dot button
 dot.addEventListener("click", Dot);
 
 function Dot(){
+    if (funnyMessage === true) {
+        Clear();
+    }
     if (dotButton === false) {
         display.textContent += this.textContent;
         dotButton = true;
@@ -122,6 +136,9 @@ function Dot(){
 negative.addEventListener("click", Negative);
 
 function Negative(){
+    if (funnyMessage === true) {
+        Clear();
+    }
     if (display.textContent == "0" || display.textContent == "0."){
         return;
     } 
@@ -140,6 +157,17 @@ function Negative(){
         negativeButton = false;
     }
 }
+//percent button
+percent.addEventListener("click", Percent);
+
+function Percent(){
+    if (funnyMessage === true) {
+        Clear();
+    }
+    if (display.textContent != "0") {
+        return Divide(display.textContent, 100);
+    }
+}
 
 //continue doing more operations
 function Continue(){
@@ -150,40 +178,48 @@ function Continue(){
     displayNumbers[0] = display.textContent;
 }
 
-function CheckReminder(a){
-    if (a % 1 === 0) {
+function CheckLength(a){
+    if (a === Infinity) {
+        display.textContent = "OOOOK buddy...";
+        funnyMessage = true;
+    }
+    else if(a.toString().length < 12 ){
         display.textContent = a;
     }
     else{
-        display.textContent = a.toFixed(2);
+        display.textContent = "TO MANY NUMBERS";
+        funnyMessage = true;
     }
 }
 
 function Add(a, b){
     let result = parseFloat(a) + parseFloat(b);
-    CheckReminder(result);
+    CheckLength(result);
     Continue();
 }
 
 function Subtract(a, b){
     let result = parseFloat(a) - parseFloat(b);
-    CheckReminder(result);
+    CheckLength(result);
     Continue();
 }
 
 function Multiply(a, b){
     let result = parseFloat(a) * parseFloat(b);
-    CheckReminder(result);
+    CheckLength(result);
     Continue();
 }
 
 function Divide(a, b){
     let result = parseFloat(a) / parseFloat(b);
-    CheckReminder(result);
+    CheckLength(result);
     Continue();
 }
 
-function Operate(first, operator, second){   
+function Operate(first, operator, second){
+    if (funnyMessage === true) {
+        Clear();
+    }   
     if (displayNumbers.length === 0) {
         return;
     }
@@ -194,10 +230,8 @@ function Operate(first, operator, second){
     }else if (operatorCheck === true && displayNumbers.length === 2) {
         displayNumbers.pop();
         displayNumbers.push(display.textContent);
-        console.log("yo");
     }
     if (equalButton === true) {
-        console.log("yo1");
         return;
     }
     operator = operatorValue;
@@ -223,8 +257,6 @@ function Operate(first, operator, second){
     }
 }
 /*BUGS
-    1. numero en negativo seguido por igual da --- LISTO
-    2. resultado negativo, no lo puedo quitar, solo se agrega otro simbolo negativo --- LISTO
-    3. algun operador mas igual rompe calculadora -- MAS o Menos
+
 */
-//AGREGAR KEYBOARD SUPPORT PARA TODO
+//AGREGAR KEYBOARD SUPPORT PARA TODO,
