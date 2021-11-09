@@ -1,6 +1,7 @@
 
 *{
     font-family: 'Press Start 2P', cursive;
+    user-select: none;
 }
 body {
     width: 100vw;
@@ -50,7 +51,7 @@ H2{
 }
 
 .numbers{
-    background-color: gray;
+    background-color: rgb(38, 219, 210);
     height: 100px;
     width: 100px;
     text-align: center;
@@ -59,6 +60,9 @@ H2{
     border-radius: 5%;
 }
 
+.numbers:active{
+    background-color: rgb(31, 177, 169);
+}
 #zero{
     grid-column: 1/3;
     text-align: center;
@@ -76,6 +80,10 @@ H2{
     border-radius: 5%;
 }
 
+.operators:active,#equal:active{
+    background-color: rgb(127, 168, 43);
+}
+
 .special{
     background-color: orange;
     height: 100px;
@@ -85,7 +93,9 @@ H2{
     line-height: 100px;
     border-radius: 5%;
 }
-
+.special:active{
+    background-color: rgb(214, 140, 3);
+}
 .footer {
     display: flex;
     align-items: center;
@@ -94,6 +104,16 @@ H2{
     width: 100vw;
     padding: 20px;
   }
+
+.numers-click{
+    background-color: blue;
+}
+.special-click{
+    background-color: blue;
+}
+.operators-click{
+    background-color: blue;
+}
 
 p{
     margin: 0px;
