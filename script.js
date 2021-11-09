@@ -187,7 +187,7 @@ function CheckLength(a){
         display.textContent = a;
     }
     else{
-        display.textContent = "TO MANY NUMBERS";
+        display.textContent = "TOO MANY NUMBERS";
         funnyMessage = true;
     }
 }
